@@ -1,0 +1,200 @@
+
+<div class="receipt-content">
+  <div class="container bootstrap snippets bootdey">
+    <div class="row d-flex justify-content-end p-4 add-btn">
+      <div class="col-3 add-btn d-flex justify-content-end">
+        <button class="pushable add-btn">
+          <span class="shadow reset-btn-shadow"></span>
+          <span class="edge reset-btn-shadow-edge"></span>
+          <span class="front reset-btn" (click)="resetForm()">
+            Reset
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="receipt-content pt-2" id="section-to-print">
+    <div class="container bootstrap snippets bootdey">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="invoice-wrapper mt-0 pt-0 pb-2">
+            <div class="payment-info mt-0 pt-0">
+              <div class="row">
+                <div class="col-6 mb-0 mt-5 d-flex align-items-end">
+                    <strong class="">VINAYAKA TEXTILES</strong>
+                    <!-- <span>Inovice No</span>
+                  <strong>{{inovicenumber}}</strong> -->
+                </div>
+                <div class="col-6 mt-5">
+                  <strong class=""></strong>
+                  <span style="display: inline;">Payment Date : </span>
+                  <strong style="display: inline;">{{todayDate | date:'MMMM d, y, h:mm a '}}</strong>
+                </div>
+              </div>
+            </div>
+            <div class="payment-details mt-2">
+              <div class="row">
+                    <div class="col-6" >
+                      <span  style="display: inline-flex;">Customer  : &nbsp; </span>
+                      <strong  style="display: inline-flex;"> 
+                        <input type="text" id="Customername"[(ngModel)]='CustomerName' autocomplete="on" class="no-outline" placeholder="Enter Customer Name">
+                      </strong>
+                    </div>
+                    <div class="col-6">
+                        <span  style="display: inline-flex;">Sales Man  : &nbsp; </span>
+                        <strong  style="display: inline-flex;">
+                          <input type="text" id="Sales man" [(ngModel)]="SalesManName" autocomplete="on" class="no-outline" placeholder="Enter Sales Man Name">  
+                        </strong>
+                    </div>
+                </div>
+            </div>
+            <div class="line-items mt-5">
+              <div class="headers clearfix">
+                <div class="row">
+                  <div  class="col-1">Sl No</div>
+                  <div class="col-4">Description</div>
+                  <div class="col-2">Quantity</div>
+                  <div class="col-2 "> 
+                    <i class="bi bi-currency-rupee"></i> Rate
+                  </div>
+                  <div class="col-3 ">
+                    <i class="bi bi-currency-rupee"></i> Amount</div>
+                </div>
+              </div>
+              <div class="items">
+                <div class="row item" *ngFor="let item of ProductList; index as i">
+                  <div class="col-1 text-center"> {{i+1}}</div>
+                  <div class="col-4 ">
+                    <input type="text" class="no-outline" placeholder="Enter Product Name" [value]="item.desc"
+                    (keypress)="KeyPressValidate($event,'AlphaNumeric')" (input)="addDesc($event,i)">
+                  </div>
+                  <div class="col-2 text-center">
+                    <input type="text" class="no-outline" placeholder="Enter Quantity" [value]="item.quantity"
+                    (keypress)="KeyPressValidate($event,'float')" (input)="addQuantity($event,i)">
+                  </div>
+                  <div class="col-2">
+                    <input type="text" class="no-outline" placeholder="Enter Rate" [value]="item.rate"
+                    (keypress)="KeyPressValidate($event,'float')" (input)="addRate($event,i)">
+                  </div>
+                  <div class="col-2 amount text-right">
+                    {{item.quantity * item.rate | number:'1.0-3'}}
+                  </div>
+                  <div class="col-1 amount text-right">
+                    <i class="bi bi-trash add-btn" (click)="removeItem(i)"></i>
+                  </div>
+                </div>
+                  <div class="row d-flex justify-content-end mt-5 add-btn">
+                    <div class="col add-btn d-flex justify-content-center" (click)="addProduct()">
+                      <button class="pushable add-btn">
+                        <span class="shadow"></span>
+                        <span class="edge"></span>
+                        <span class="front">
+                          Add new Product
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+              </div>
+              <div class="total text-right">
+                <div class="row item">
+                    <div class="col-6">
+                        <p class="extra-notes">
+                            <strong>Terms & Conditions</strong>
+                            NO EXCHANGE AND NO RETURN <br>
+                            <br>
+                            NO WARRENTY ON COTTON, SILK,
+                            <br> NYLON COTTON, LINEN COTTON AND
+                            <br> ALL PRINTED ITEMS
+                            <br>
+                            <br>
+                            NO GURANTEE ON COLORS
+
+                          </p>
+                    </div>
+                    <div class="col-6">
+                        <div class="field">
+                            <div class="row">
+                                <div class="col-5 text-center">
+                                    Excl.Sub Total
+                                </div>
+                                <div class="col ">
+                                    <span><i class="bi bi-currency-rupee"></i>{{getSubTotal() | number:'1.0-2'}}</span>
+                                </div>
+                            </div>
+                          </div> 
+                          <div class="field">
+                            <div class="row">
+                                <div class="col-5 text-center">
+                                    CGST 2.5% 
+                                </div>
+                                <div class="col">
+                                    <span><i class="bi bi-currency-rupee"></i>{{getCGST() | number:'1.0-2'}}</span>
+                                </div>
+                            </div>
+                          </div>
+                          <div class="field">
+                            <div class="row">
+                                <div class="col-5 text-center">
+                                    SGST 2.5% 
+                                </div>
+                                <div class="col">
+                                    <span><i class="bi bi-currency-rupee"></i>{{getCGST() | number:'1.0-2'}}</span>
+                                </div>
+                            </div>
+                          </div>
+                          <div class="field">
+                            <div class="row">
+                                <div class="col-5 text-center">
+                                    IGST 5.0% 
+                                </div>
+                                <div class="col">
+                                    <span><i class="bi bi-currency-rupee"></i>0.00</span>
+                                </div>
+                            </div>
+                          </div>
+                          <div class="field grand-total ">
+                            <div class="row">
+                                <div class="col-5 text-center">
+                                    Grand Total 
+                                </div>
+                                <div class="col">
+                                    <span><i class="bi bi-currency-rupee"></i>{{getGrandTotal() | number:'1.0-2'}}</span>
+                                </div>
+                            </div>
+                          </div>
+                          <div class="row d-flex justify-content-end mt-3 add-btn">
+                            <div class="col add-btn d-flex justify-content-end position-relative" style="top: -50px;">
+                              <button class="pushable add-btn" (click)="Print()">
+                                <span class="shadow  print-btn-shadow"></span>
+                                <span class="edge print-btn-shadow-edge"></span>
+                                <span class="front print-btn">
+                                  Print
+                                </span>
+                              </button>
+                            </div>
+                          </div>
+                          
+                    </div>
+                </div>
+                
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="receipt-content">
+    <div class="container bootstrap snippets bootdey">
+      <div class="row">
+        <div class="col-md-12">
+            <div class="footer">
+                Copyright © 2023. Vinayaka Cloth Merchant
+              </div>
+        </div>
+      </div>
+    </div>
+  </div>

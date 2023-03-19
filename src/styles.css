@@ -1,1 +1,51 @@
 /* You can add global styles to this file, and also import other style files */
+@media print {
+    body * {
+      visibility: hidden;
+      /* font-size: 95% !important; */
+    }
+    #section-to-print, #section-to-print * {
+      visibility: visible;
+    }
+    #section-to-print {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width:210mm;
+    }
+    .items{
+        min-height:660px ;
+      }
+      .add-btn{
+        display: none;
+      }
+      ::-webkit-input-placeholder { /* WebKit browsers */
+        color: transparent;
+    }
+    :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+        color: transparent;
+    }
+    ::-moz-placeholder { /* Mozilla Firefox 19+ */
+        color: transparent;
+    }
+    :-ms-input-placeholder { /* Internet Explorer 10+ */
+        color: transparent;
+    }
+  }
+  @page {
+    margin:.25in;
+    padding:0;
+    }
+    
+    @media print {
+    html, body {
+    width:110%;
+    height:auto;
+    margin:auto;
+    padding:0;
+    }
+    
+    #main_container { left:-278px !important; }
+    #playbar { display:none !important; }
+    [id^="Button_"]{ display:none !important;}
+    }
