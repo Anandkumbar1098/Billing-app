@@ -107,5 +107,7 @@
       }
     }
   },
-  "defaultProject": "Billing_app"
+  "cli": {
+    "analytics": "8798e7eb-a9c5-4e5c-8342-68ea8da773fb"
+  }
 }
