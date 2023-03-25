@@ -70,6 +70,7 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": { "proxyConfig": "src/proxy.conf.json" } ,
           "configurations": {
             "production": {
               "browserTarget": "Billing_app:build:production"

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BillingServiceService } from 'src/app/service/billing-service.service';
 
 @Component({
   selector: 'app-billing',
@@ -12,15 +14,29 @@ export class BillingComponent implements OnInit {
   ProductList:any=[];
   todayDate= new Date();
   inovicenumber : string | null | undefined='';
-  constructor() { 
-    if(!localStorage.getItem('InoviceNumber'))
-    {
-      localStorage.setItem('InoviceNumber','20000')
-    }
-    this.incrementinovice();
+  isSaved: boolean = false;
+  constructor(private billingservice:BillingServiceService,private router:Router,private route: ActivatedRoute) { 
   }
 
   ngOnInit(): void {
+    if(this.router.url.includes('display'))
+    {
+      console.log(this.route.snapshot.paramMap.get('id'))
+      let data = {
+        billid: this.route.snapshot.paramMap.get('id')
+      }
+      this.billingservice.getbill(data).subscribe(data => {
+        console.log(data);
+        if(data.status == 'success')
+        {
+          this.isSaved = true;
+          this.CustomerName = data.bill.customername;
+          this.SalesManName = data.bill.salesmanname;
+          this.ProductList = data.products;
+          this.todayDate = data.bill.Date;
+        }
+      })  
+    }
     this.addProduct();
   }
   addProduct()
@@ -39,7 +55,33 @@ export class BillingComponent implements OnInit {
   Print()
   {
     window.print();  
-    this.incrementinovice();
+  }
+  async Save()
+  {
+    let itemlist:any=[];
+    this.ProductList.forEach((element: any) => {
+      let item ={
+        desc : element.desc,
+        quantity : element.quantity,
+        rate : element.rate
+      }
+      itemlist.push(item);
+    });
+    let req = {
+        "customername": this.CustomerName,
+        "salesman" : this.SalesManName,
+        "total" : this.getGrandTotal(),
+        "productlist" : itemlist
+    }
+    console.log(req);
+    this.billingservice.addbill(req).subscribe(data => {
+      console.log(data);
+      if(data.status == 'success')
+      {
+        this.isSaved = true;
+      }
+    })  
+    
   }
   getSubTotal(){
     return ( this.getGrandTotal() / 1.05 );
@@ -73,8 +115,12 @@ export class BillingComponent implements OnInit {
     this.ProductList=[];
     this.SalesManName='';
     this.addProduct();
-    this.incrementinovice();
     this.todayDate= new Date();
+    this.isSaved = false
+    setTimeout(()=>{
+      this.router.navigateByUrl('/',{skipLocationChange:true}).then(() =>
+      this.router.navigateByUrl('/bill'))
+    },100)
   }
   KeyPressValidate(event:any,key:any)
   {
@@ -102,11 +148,5 @@ export class BillingComponent implements OnInit {
       event.preventDefault();
       return false;
     }
-  }
-  incrementinovice()
-  {
-    let number = localStorage.getItem('InoviceNumber');
-    this.inovicenumber= (parseInt(number?number:'1') + 1).toString();
-    localStorage.setItem('InoviceNumber',this.inovicenumber)
   }
 }

@@ -306,6 +306,15 @@
   .reset-btn-shadow-edge{
     background: rgba(182, 10, 64, 0.463);
   }
+  .submit-btn{
+    background: rgb(255, 2, 150);
+  }
+  .submit-btn-shadow{
+    background: rgba(255, 2, 150, 0.352);
+  }
+  .submit-btn-shadow-edge{
+    background: rgba(255, 2, 150, 0.463);
+  }
   .print-btn{
     background: rgb(95, 148, 233);
   }
@@ -317,4 +326,7 @@
   }
   .extra-notes{
     width: 100% !important;
+  }
+  .disabled{
+    pointer-events: none;
   }

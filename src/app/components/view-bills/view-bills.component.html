@@ -1,0 +1,70 @@
+<section class="mt-0 pt-0 position-relative" style="background-color: #f5f7fa; top:-20px" >
+    <div class="row my-3" >
+        <div class="col-2"></div>
+        <div class="col-3">
+            <div class="input-group date mt-4" id="datepicker">
+                <label class=" align-items-center d-flex"> Start Date</label>
+              <input type="date" class="form-control mx-2 rounded" [(ngModel)]="start_date" id="date" placeholder="Enter Start Date"/>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="input-group date mt-4" id="datepicker">
+                <label class=" align-items-center d-flex"> End Date</label>
+
+              <input type="date" class="form-control mx-2 rounded" [(ngModel)]="end_date"  id="date" placeholder="Enter End Date"/>
+            </div>
+          </div>
+          <div class="col">
+            <div class="input-group date mt-4">
+                <button type="button" class="btn btn-primary" (click)="GetBills()">Submit</button>
+            </div>
+          </div>
+
+    </div>
+    <div class="bg-image" >
+      <div class="mask d-flex align-items-center">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-body p-0">
+                  <div class="table-responsive table-scroll" data-mdb-perfect-scrollbar="true" style="position: relative; min-height: 500px">
+                    <table class="table table-striped mb-0">
+                      <thead style="background-color: #008cff;">
+                        <tr>
+                          <th scope="col">SL NO</th>
+                          <th scope="col">Customer Name</th>
+                          <th scope="col">SaleMan Name</th>
+                          <th scope="col">Date</th>
+                          <th scope="col">Total</th>
+                          <th scope="col">View</th>
+                        </tr>
+                      </thead>
+                     <tbody>
+                        <tr *ngFor="let item of BillList; index as i">
+                            <td>{{i+1}}</td>
+                            <td>{{item.customername}}</td>
+                            <td>{{item.salesmanname}}</td>
+                            <td>{{item.Date| date:'short'}}</td>
+                            <td><i class="bi bi-currency-rupee"></i>{{item.Total | number:'1.0-3'}}</td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-danger" routerLink="/display/{{item.id}}">View</button>
+                            </td>
+                          </tr>
+                          <tr *ngIf="BillList.length!=0" style="background-color: #3dd069;">
+                            <td colspan="3"></td>
+                            <td>Total</td>
+                            <td><i class="bi bi-currency-rupee"></i>{{getTotal() | number:'1.0-3'}}</td>
+                            <td></td>
+                          </tr>
+                     </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>

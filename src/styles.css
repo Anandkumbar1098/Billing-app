@@ -14,10 +14,13 @@
       width:210mm;
     }
     .items{
-        min-height:660px ;
+        min-height:610px ;
       }
       .add-btn{
         display: none;
+        height: 0;
+        width: 0;
+        
       }
       ::-webkit-input-placeholder { /* WebKit browsers */
         color: transparent;

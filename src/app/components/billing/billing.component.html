@@ -1,20 +1,4 @@
 
-<div class="receipt-content">
-  <div class="container bootstrap snippets bootdey">
-    <div class="row d-flex justify-content-end p-4 add-btn">
-      <div class="col-3 add-btn d-flex justify-content-end">
-        <button class="pushable add-btn">
-          <span class="shadow reset-btn-shadow"></span>
-          <span class="edge reset-btn-shadow-edge"></span>
-          <span class="front reset-btn" (click)="resetForm()">
-            Reset
-          </span>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div class="receipt-content pt-2" id="section-to-print">
     <div class="container bootstrap snippets bootdey">
       <div class="row">
@@ -23,7 +7,7 @@
             <div class="payment-info mt-0 pt-0">
               <div class="row">
                 <div class="col-6 mb-0 mt-5 d-flex align-items-end">
-                    <strong class="">VINAYAKA TEXTILES</strong>
+                    <strong class="">VINAYAKA TEXTILES SINDAGI</strong>
                     <!-- <span>Inovice No</span>
                   <strong>{{inovicenumber}}</strong> -->
                 </div>
@@ -63,19 +47,35 @@
                     <i class="bi bi-currency-rupee"></i> Amount</div>
                 </div>
               </div>
-              <div class="items">
+              <div class="items" [ngClass]="isSaved?'disabled':''">
                 <div class="row item" *ngFor="let item of ProductList; index as i">
                   <div class="col-1 text-center"> {{i+1}}</div>
                   <div class="col-4 ">
-                    <input type="text" class="no-outline" placeholder="Enter Product Name" [value]="item.desc"
-                    (keypress)="KeyPressValidate($event,'AlphaNumeric')" (input)="addDesc($event,i)">
+                    <input type="text" class="no-outline" autocomplete="off" placeholder="Enter Product Name" id='pdesc' [value]="item.desc"
+                    (keypress)="KeyPressValidate($event,'AlphaNumeric')" (input)="addDesc($event,i)" list="Products">
+                    <datalist id="Products" role="listbox">
+                      <option value="Pant">Pant</option>
+                      <option value="Shirt">Shirt</option>
+                      <option value="Saree">Saree</option>
+                      <option value="Microsoft Edge">Microsoft Edge</option>
+                      <option value="Firefox">Firefox</option><option value="Microsoft Edge">Microsoft Edge</option>
+                      <option value="Firefox">Firefox</option><option value="Microsoft Edge">Microsoft Edge</option>
+                      <option value="Firefox">Firefox</option><option value="Microsoft Edge">Microsoft Edge</option>
+                      <option value="Firefox">Firefox</option><option value="Microsoft Edge">Microsoft Edge</option>
+                      <option value="Firefox">Firefox</option><option value="Microsoft Edge">Microsoft Edge</option>
+                      <option value="Firefox">Firefox</option><option value="Microsoft Edge">Microsoft Edge</option>
+                      <option value="Firefox">Firefox</option><option value="Microsoft Edge">Microsoft Edge</option>
+                      <option value="Firefox">Firefox</option><option value="Microsoft Edge">Microsoft Edge</option>
+                      <option value="Firefox">Firefox</option><option value="Microsoft Edge">Microsoft Edge</option>
+                      <option value="Firefox">Firefox</option>
+                    </datalist>
                   </div>
                   <div class="col-2 text-center">
-                    <input type="text" class="no-outline" placeholder="Enter Quantity" [value]="item.quantity"
+                    <input type="text" class="no-outline" placeholder="Enter Quantity" id='quantity' [value]="item.quantity"
                     (keypress)="KeyPressValidate($event,'float')" (input)="addQuantity($event,i)">
                   </div>
                   <div class="col-2">
-                    <input type="text" class="no-outline" placeholder="Enter Rate" [value]="item.rate"
+                    <input type="text" class="no-outline" placeholder="Enter Rate" [value]="item.rate" id="rate"
                     (keypress)="KeyPressValidate($event,'float')" (input)="addRate($event,i)">
                   </div>
                   <div class="col-2 amount text-right">
@@ -85,9 +85,25 @@
                     <i class="bi bi-trash add-btn" (click)="removeItem(i)"></i>
                   </div>
                 </div>
-                  <div class="row d-flex justify-content-end mt-5 add-btn">
-                    <div class="col add-btn d-flex justify-content-center" (click)="addProduct()">
-                      <button class="pushable add-btn">
+              </div>
+              <div>
+                <div class="row item my-2">
+                  <div class="col-7">
+                        
+                  </div>
+                  <div class="col-2 amount text-right font-weight-bold">
+                      Total
+                  </div>
+                  <div class="col-2 amount text-right font-weight-bold">
+                    <i class="bi bi-currency-rupee"></i>{{getGrandTotal() | number:'1.0-3'}}
+                  </div>
+
+                </div>
+              </div>
+              <div class="row  payment-details mt-1 mx-0" ></div>
+                  <div class="row d-flex justify-content-end  add-btn mb-3" [ngClass]="isSaved?'disabled':''">
+                    <div class="col-8 add-btn d-flex justify-content-end" >
+                      <button class="pushable add-btn" (click)="addProduct()">
                         <span class="shadow"></span>
                         <span class="edge"></span>
                         <span class="front">
@@ -95,9 +111,17 @@
                         </span>
                       </button>
                     </div>
+                      <div class="col add-btn d-flex justify-content-end" style="pointer-events: all;">
+                        <button class="pushable add-btn">
+                          <span class="shadow reset-btn-shadow"></span>
+                          <span class="edge reset-btn-shadow-edge"></span>
+                          <span class="front reset-btn" (click)="resetForm()">
+                            Reset
+                          </span>
+                        </button>
+                      </div>
                   </div>
-              </div>
-              <div class="total text-right">
+              <div class="total text-right mt-1">
                 <div class="row item">
                     <div class="col-6">
                         <p class="extra-notes">
@@ -164,7 +188,18 @@
                                 </div>
                             </div>
                           </div>
-                          <div class="row d-flex justify-content-end mt-3 add-btn">
+                          <div class="row d-flex justify-content-end mt-3 add-btn" *ngIf="!isSaved">
+                            <div class="col add-btn d-flex justify-content-end position-relative" style="top: -50px;">
+                              <button class="pushable add-btn" (click)="Save()">
+                                <span class="shadow  submit-btn-shadow"></span>
+                                <span class="edge submit-btn-shadow-edge"></span>
+                                <span class="front submit-btn">
+                                  Save
+                                </span>
+                              </button>
+                            </div>
+                          </div>
+                          <div class="row d-flex justify-content-end mt-3 add-btn" *ngIf="isSaved">
                             <div class="col add-btn d-flex justify-content-end position-relative" style="top: -50px;">
                               <button class="pushable add-btn" (click)="Print()">
                                 <span class="shadow  print-btn-shadow"></span>
