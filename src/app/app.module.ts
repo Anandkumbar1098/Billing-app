@@ -9,6 +9,7 @@ import { BillingComponent } from './components/billing/billing.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ViewBillsComponent } from './components/view-bills/view-bills.component';
 import { HomeComponent } from './components/home/home.component';
+import { HighchartsChartModule } from 'highcharts-angular';
 
 @NgModule({
   declarations: [
@@ -19,10 +20,12 @@ import { HomeComponent } from './components/home/home.component';
     HomeComponent,
   ],
   imports: [
+    HighchartsChartModule,
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    
   ],
   providers: [
     { provide: APP_BASE_HREF, useValue: '/' },

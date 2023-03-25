@@ -21,4 +21,9 @@ export class BillingServiceService {
     console.log(Data)
     return this.http.post('http://localhost:5000/addbill',Data)
   }
+  getAnalyticsPieGraph(Data:any):Observable<any> {
+    console.log(Data)
+    return this.http.post('http://localhost:5000/PieChart/Groupby/desc',Data)
+  }
+
 }
