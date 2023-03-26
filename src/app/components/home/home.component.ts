@@ -16,10 +16,16 @@ export class HomeComponent implements OnInit {
   Highcharts: typeof Highcharts = Highcharts; 
   PiechartOptions: any = {}; 
   SaleschartOptions: any ={};
+  BarchartOptions: any = {};
+  PiechartOptionsPerWeekday:any = {};
   updateFlag: boolean = false; // optional boolean
   oneToOneFlag: boolean = true;
   salesPieSeries :any =[];
   salesLineSeries: any;
+  salesPerPerson: any;
+  SalesLineSeriesTotal: any;
+  Days :any = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  salesPerWeekDays: any;
   constructor(private billingservice : BillingServiceService, public datepipe: DatePipe) { }
 
   ngOnInit(): void {
@@ -47,8 +53,14 @@ export class HomeComponent implements OnInit {
        {
           this.salesPieSeries = data.SalesPieData;
           this.salesLineSeries = data.SalesSeriesDate;
+          this.SalesLineSeriesTotal = data.SalesSeriesTotalList;
+          this.salesPerPerson = data.SalesPerPerson;
+          this.salesPerWeekDays = data.SalesperWeekDay;
           this.InitPieChart();
+          this.InitPieChartPerWeek();
+          this.addTotalToLineSeries();
           this.InitLineChart();
+          this.InitBarChart();
           this.updateFlag = true;
        }
      }) 
@@ -62,7 +74,7 @@ export class HomeComponent implements OnInit {
               type: 'pie'
           },
           title: {
-              text: 'Total Sales Share percentage',
+              text: 'Total Sales Share Percentage per category',
               align: 'center'
           },
           tooltip: {
@@ -87,6 +99,42 @@ export class HomeComponent implements OnInit {
             name: 'Rupees',
             colorByPoint: true,
             data:this.getFomattedSeriesforPie(this.salesPieSeries)
+        }]
+      }
+    }
+  InitPieChartPerWeek()
+  {
+    this.PiechartOptionsPerWeekday = {
+          chart: {
+              plotShadow: false,
+              type: 'pie'
+          },
+          title: {
+              text: 'Total Sales Share percentage per Week Days',
+              align: 'center'
+          },
+          tooltip: {
+              pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+          },
+          accessibility: {
+              point: {
+                  valueSuffix: '%'
+              }
+          },
+          plotOptions: {
+              pie: {
+                  allowPointSelect: true,
+                  cursor: 'pointer',
+                  dataLabels: {
+                      enabled: true,
+                      format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                  }
+              }
+          },
+          series: [{
+            name: 'Rupees',
+            colorByPoint: true,
+            data:this.getFomattedSeriesforPiePerWeek(this.salesPerWeekDays)
         }]
       }
     }
@@ -141,6 +189,53 @@ export class HomeComponent implements OnInit {
     }
   
   }
+  InitBarChart()
+  {
+    this.BarchartOptions = {
+        chart: {
+          renderTo: 'container',
+          type: 'column',
+          options3d: {
+              enabled: true,
+              alpha: 0,
+              beta: 28,
+              depth: 70,
+              viewDistance: 25
+          }
+      },
+      xAxis: {
+          categories: this.getFormattedSeriesForBar(this.salesPerPerson,'categories')
+      },
+      yAxis: {
+          title: {
+              enabled: false
+          }
+      },
+      tooltip: {
+        formatter: function():any {
+            // console.log(this);
+            let obj:any = this;
+            return '<b>'+ obj.x+'</b>' +'<br> Rupees:'+'<b>'+ obj.y+'</b>'
+        }
+      },
+      title: {
+          text: 'Sales Per Person',
+          align: 'center'
+      },
+      legend: {
+          enabled: false
+      },
+      plotOptions: {
+          column: {
+              depth: 25
+          }
+      },
+      series: [{
+          data: this.getFormattedSeriesForBar(this.salesPerPerson,'series'),
+          colorByPoint: true
+      }]
+    }
+  }
 
     getFomattedSeriesforPie(data:any)
     {
@@ -158,6 +253,28 @@ export class HomeComponent implements OnInit {
         else{
           pieseriesdata.push({
             name : element.desc,
+            y : parseInt(element.Total)
+          })
+        }
+      });
+      return pieseriesdata;
+    }
+    getFomattedSeriesforPiePerWeek(data:any)
+    {
+      let pieseriesdata:any = [];
+      data.forEach((element:any,index:number) => {
+        if(index==1)
+        {
+          pieseriesdata.push({
+            name : this.Days[element.Day],
+            y : parseInt(element.Total),
+            sliced: true,
+            selected: true
+          })
+        }
+        else{
+          pieseriesdata.push({
+            name : this.Days[element.Day],
             y : parseInt(element.Total)
           })
         }
@@ -192,6 +309,34 @@ export class HomeComponent implements OnInit {
         }
         
       });
+      console.log(series);
+      return series;
+    }
+    addTotalToLineSeries()
+    {
+      this.SalesLineSeriesTotal.forEach((element:any) => {
+        this.salesLineSeries.push({
+          Date: element.Date, Total: element.Total, desc: "Total"
+        }
+        )
+      });
+    }
+
+    getFormattedSeriesForBar(data:any,type:any)
+    {
+      let series:any=[]
+      if(type=='series')
+      {
+        data.forEach((element:any) => {
+          series.push(parseInt(element.Total));
+        });
+      }
+      else if(type=='categories')
+      {
+        data.forEach((element:any) => {
+          series.push(element.SalesMan);
+        });
+      }
       console.log(series);
       return series;
     }
